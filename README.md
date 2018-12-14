@@ -1,7 +1,7 @@
 # Purge
 
 ## Introduction
-Once you have identified regions in the chromosome of the reference isolate you will need to remove them as well as non-variant sites in the alignment. I would say PURGE THEM! Purge.py is simply a script to do this two steps in one.
+Once you have identified regions in the chromosome of the reference isolate you will need to remove them as well as non-variant sites in the alignment. I would say PURGE THEM! Purge.py is simply a script to do these two steps in one.
 
 ## Usage
 ```
