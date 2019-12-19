@@ -44,7 +44,7 @@ def getargv():
 
 def ErrorOut(error):
     print ("\nError: ", error)
-    print ("\n That's pretty sad face. Double check all inputs using -h or --help. Or call me ... maybe?")
+    print ("\nThat's pretty sad face. Double check all inputs using -h or --help. Or call me ... maybe?")
     print ()
     sys.exit()
 
@@ -69,9 +69,7 @@ def main():
         ErrorOut('No alignment file stated.')
     elif args.masking_file == None:
         ErrorOut('No masking file stated. I need a mask!')
-    
 
-    
     idir = args.dirpath ##the working directory that holds the samples
     odir = args.outdir ##the directory for output
     afile = args.aln_file #reading in alignment file
@@ -86,8 +84,6 @@ def main():
         
     if not os.path.isfile(mfile):
         ErrorOut("Unable to find the masking file.")
-
-        
 
 
     ##if the input directory and output directory doesn't have a forward slash exit
