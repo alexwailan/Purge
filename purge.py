@@ -32,8 +32,8 @@ def getargv():
 	usage = 'purge.py [options] aln_file masking_file'
 	parser = argparse.ArgumentParser(usage=usage, description=description)
 
-	parser.add_argument('aln_file', help='Core SNV alignment file', metavar='N',type=str, nargs='?')
-	parser.add_argument('masking_file', help='The masking files.', metavar='N', type=str, nargs='?')
+	parser.add_argument('aln_file', help='Core SNV alignment file', metavar='FILE',type=str, nargs='?')
+	parser.add_argument('masking_file', help='The masking files.', metavar='FILE', type=str, nargs='?')
 	parser.add_argument('-d',	'--dirpath', help='Specify input directory containing files. End with a forward slash. Eg. /temp/fasta/', metavar='N', type=str, nargs='?', default=os.getcwd()+'/') 
 	parser.add_argument('-o',	'--outdir', help='Specify output directory. End with a forward slash. Eg. /temp/fasta/; Default to use current directory.', metavar='N', type=str, nargs='?', default=os.getcwd()+'/')       
 	return parser.parse_args()
