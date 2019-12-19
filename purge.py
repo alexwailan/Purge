@@ -31,7 +31,7 @@ def depend_check(dependencies):
 
 
 def getargv():
-	description='Run Purge.py A program to only keep SNV sites in your alignment. Combines remove_blocks_from_aln.py and snp-sites in one step'
+	description='Run Purge.py A program to only keep SNV sites in your alignment i.e. PURGE IT WITH FIRE! Combines remove_blocks_from_aln.py and snp-sites in one step'
 	usage = 'purge.py [options] aln_file masking_file'
 	parser = argparse.ArgumentParser(usage=usage, description=description)
 
@@ -58,23 +58,23 @@ def main():
     #      Parse/ check the arguements        
     #
     #############################################################################################
-
-
     
+    args = getargv()
+
     idir = args.dirpath ##the working directory that holds the samples
     odir = args.outdir ##the directory for output
     afile = args.aln_file #reading in alignment file
     mfile = args.masking_file #reading in masking file
 
 
-    ##if the input directory and output directory don't have a forward slash exit
+    ##if the input directory and output directory doesn't have a forward slash exit
     if(idir[-1]!='/'):
       print(idir[-1])
       print('\n The input directory should end with a forward slash')
       exit()
 
 
-    ##if the output directory and output directory don't have a forward slash exit
+    ##if the output directory and output directory doesn't have a forward slash exit
     if(odir[-1]!='/'):
       print(odir[-1])
       print('\n The output directory should end with a forward slash')
@@ -103,7 +103,7 @@ def main():
         print("\n Mate! Not all required dependencies are loaded.")
         sys.exit()
     
-    args = getargv()
+    
 
     #############################################################################################
     #
@@ -112,8 +112,7 @@ def main():
     #
     #############################################################################################
     print()
-    print("Starting the PURGE!")
-    #Remove unnecessary files
+    print("Get out your matches! Starting the PURGE!")
     p = subprocess.call("remove_blocks_from_aln.py -a %s -t %s -o core_masked.aln "%(idir+afile,idir+mfile), shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE) 
     #output,error = p.communicate() #Read data from stdout and stderr. Wait for process to terminate.
     masked_f = Path(idir+'core_masked.aln')
@@ -138,6 +137,7 @@ def main():
 
     print("Variant site alignment creation successfull")
     print()
+    print("Well then. Purging your alignment with fire worked!")
     print("masked_core.snp_sites.aln is your final core SNV aligment")
 
 if __name__ == '__main__':
