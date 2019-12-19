@@ -27,9 +27,6 @@ def depend_check(dependencies):
             all_d.append('FALSE')
     return all_d
 
-
-
-
 def getargv():
 	description='Run Purge.py A program to only keep SNV sites in your alignment i.e. PURGE IT WITH FIRE! Combines remove_blocks_from_aln.py and snp-sites in one step'
 	usage = 'purge.py [options] aln_file masking_file'
@@ -41,7 +38,15 @@ def getargv():
 	parser.add_argument('-o',	'--outdir', help='Specify output directory. End with a forward slash. Eg. /temp/fasta/; Default to use current directory.', metavar='N', type=str, nargs='?', default=os.getcwd()+'/')       
 	return parser.parse_args()
 
+##########################################
+# How one communicates an error
+##########################################
 
+def ErrorOut(error):
+    print ("\nError: ", error)
+    print ("\n That's pretty sad face. Double check all inputs using -h or --help. Or call me ... maybe?")
+    print ()
+    sys.exit()
 
 
 #############################################################################################
@@ -51,8 +56,7 @@ def getargv():
 #############################################################################################
 
 def main():
-    
-    
+
     #############################################################################################
     #
     #      Parse/ check the arguements        
@@ -60,11 +64,30 @@ def main():
     #############################################################################################
     
     args = getargv()
+    
+    if args.aln_file == None:
+        ErrorOut('No alignment file stated.')
+    elif args.masking_file == None:
+        ErrorOut('No masking file stated. I need a mask!')
+    
 
+    
     idir = args.dirpath ##the working directory that holds the samples
     odir = args.outdir ##the directory for output
     afile = args.aln_file #reading in alignment file
     mfile = args.masking_file #reading in masking file
+    
+    ##########################################
+    # Check if files exists
+    ##########################################
+
+    if not os.path.isfile(afile):
+        ErrorOut("Unable to find the alignment file.")
+        
+    if not os.path.isfile(mfile):
+        ErrorOut("Unable to find the masking file.")
+
+        
 
 
     ##if the input directory and output directory doesn't have a forward slash exit
@@ -107,15 +130,26 @@ def main():
 
     #############################################################################################
     #
-    #      Construct the output command for the program
+    #      Construct the output command & running for the programs
     #       
-    #
     #############################################################################################
+    
+    ##########################################
+    # Remove blocks program step
+    ##########################################    
+    
+    
     print()
     print("Get out your matches! Starting the PURGE!")
     p = subprocess.call("remove_blocks_from_aln.py -a %s -t %s -o core_masked.aln "%(idir+afile,idir+mfile), shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE) 
     #output,error = p.communicate() #Read data from stdout and stderr. Wait for process to terminate.
+    
+    ##########################################
+    # Check if masked aln file exists
+    ##########################################
+
     masked_f = Path(idir+'core_masked.aln')
+    
     if not os.path.isfile(masked_f):
         print("Masking of region failed. Program exited")
         sys.exit()
@@ -123,14 +157,25 @@ def main():
 
     print("Masking of region successfull!")
 
+    ##########################################
+    # Snp-sites program step
+    ##########################################    
+  
+    
     #Generate SNV only alignment using snp-sites
     p = subprocess.call("snp-sites -vpmc -o masked_core %s"%(masked_f), shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     #output,error = p.communicate() #Read data from stdout and stderr. Wait for process to terminate.
+    
+    ##########################################
+    # Check if masked aln file exists
+    ##########################################
+    
     mcore_f = Path(idir+'masked_core.snp_sites.aln')
     if not os.path.isfile(mcore_f):
         print("Variant site alignment creation failed")
         print(error)
         sys.exit()
+    
     #Capturing version of snp-sites  
     p = subprocess.call("snp-sites -V", shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     #output,error = p.communicate()
@@ -138,8 +183,10 @@ def main():
     print("Variant site alignment creation successfull")
     print()
     print("Well then. Purging your alignment with fire worked!")
-    print("masked_core.snp_sites.aln is your final core SNV aligment")
+    print("masked_core.snp_sites.aln is your final core SNV alignment")
 
+    
+    
 if __name__ == '__main__':
     main()
 
