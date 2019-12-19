@@ -7,7 +7,6 @@
 
 import os
 import sys
-import pandas
 import argparse
 import pandas as pd
 import numpy as np
@@ -16,17 +15,7 @@ import pathlib
 from pathlib import Path
 import shutil
 
-##########################################
-# Check if dependent programs are loaded #
-##########################################
 
-dependencies = [
-'remove_blocks_from_aln.py',
-'snp-sites'
-]
-
-print()
-print("Checking dependencies mate! \n")
 def depend_check(dependencies):
     all_d = []
     for d in dependencies:
@@ -38,11 +27,7 @@ def depend_check(dependencies):
             all_d.append('FALSE')
     return all_d
 
-if not 'FALSE' in depend_check(dependencies):
-    print("I can see all dependencies! \n")
-else:
-    print("\n Mate! Not all required dependencies are loaded.")
-    sys.exit()
+
 
 
 def getargv():
@@ -57,84 +42,104 @@ def getargv():
 	return parser.parse_args()
 
 
-args = getargv()
-
-#############################################################################################
-#
-#      Parse/ check the arguements        
-#
-#############################################################################################
-
-
-##the working directory that holds the samples
-idir = args.dirpath
-
-##the directory for output
-odir = args.outdir
-
-#reading in alignment file
-afile = args.aln_file
-
-#reading in masking file
-mfile = args.masking_file
-
-
-##if the input directory and output directory don't have a forward slash exit
-if(idir[-1]!='/'):
-  print(idir[-1])
-  print('\n The input directory should end with a forward slash')
-  exit()
-
-
-##if the output directory and output directory don't have a forward slash exit
-if(odir[-1]!='/'):
-  print(odir[-1])
-  print('\n The output directory should end with a forward slash')
-  exit()
-
-
-#Let your peeps know what is happening. Just a bit of communication.
-print('Working directory will be: ' + idir) 
-print('Output directory will be: ' + odir) 
-print('Using alignment file: ' + afile) 
-print('Using masking file: ' + mfile)
-
 
 
 #############################################################################################
 #
-#      Construct the output command for the program
-#       
+#      Main Program
 #
 #############################################################################################
-print()
-print("Starting the PURGE!")
-#Remove unnecessary files
-p = subprocess.call("remove_blocks_from_aln.py -a %s -t %s -o core_masked.aln "%(idir+afile,idir+mfile), shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE) 
-#output,error = p.communicate() #Read data from stdout and stderr. Wait for process to terminate.
-masked_f = Path(idir+'core_masked.aln')
-if not os.path.isfile(masked_f):
-	print("Masking of region failed. Program exited")
-	sys.exit()
+
+def main():
+    
+    
+    #############################################################################################
+    #
+    #      Parse/ check the arguements        
+    #
+    #############################################################################################
 
 
-print("Masking of region successfull!")
+    
+    idir = args.dirpath ##the working directory that holds the samples
+    odir = args.outdir ##the directory for output
+    afile = args.aln_file #reading in alignment file
+    mfile = args.masking_file #reading in masking file
 
-#Generate SNV only alignment using snp-sites
-p = subprocess.call("snp-sites -vpmc -o masked_core %s"%(masked_f), shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-#output,error = p.communicate() #Read data from stdout and stderr. Wait for process to terminate.
-mcore_f = Path(idir+'masked_core.snp_sites.aln')
-if not os.path.isfile(mcore_f):
-	print("Variant site alignment creation failed")
-	print(error)
-	sys.exit()
-#Capturing version of snp-sites  
-p = subprocess.call("snp-sites -V", shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-#output,error = p.communicate()
 
-print("Variant site alignment creation successfull")
-print()
-print("masked_core.snp_sites.aln is your final core SNV aligment")
+    ##if the input directory and output directory don't have a forward slash exit
+    if(idir[-1]!='/'):
+      print(idir[-1])
+      print('\n The input directory should end with a forward slash')
+      exit()
 
-		
+
+    ##if the output directory and output directory don't have a forward slash exit
+    if(odir[-1]!='/'):
+      print(odir[-1])
+      print('\n The output directory should end with a forward slash')
+      exit()
+
+
+    #Let your peeps know what is happening. Just a bit of communication.
+    print('Working directory will be: ' + idir) 
+    print('Output directory will be: ' + odir) 
+    print('Using alignment file: ' + afile) 
+    print('Using masking file: ' + mfile)
+    
+    ##########################################
+    # Check if dependent programs are loaded #
+    ##########################################
+
+    dependencies = [
+    'remove_blocks_from_aln.py',
+    'snp-sites'
+    ]
+    print()
+    print("Checking dependencies mate! \n")
+    if not 'FALSE' in depend_check(dependencies):
+        print("I can see all dependencies! \n")
+    else:
+        print("\n Mate! Not all required dependencies are loaded.")
+        sys.exit()
+    
+    args = getargv()
+
+    #############################################################################################
+    #
+    #      Construct the output command for the program
+    #       
+    #
+    #############################################################################################
+    print()
+    print("Starting the PURGE!")
+    #Remove unnecessary files
+    p = subprocess.call("remove_blocks_from_aln.py -a %s -t %s -o core_masked.aln "%(idir+afile,idir+mfile), shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE) 
+    #output,error = p.communicate() #Read data from stdout and stderr. Wait for process to terminate.
+    masked_f = Path(idir+'core_masked.aln')
+    if not os.path.isfile(masked_f):
+        print("Masking of region failed. Program exited")
+        sys.exit()
+
+
+    print("Masking of region successfull!")
+
+    #Generate SNV only alignment using snp-sites
+    p = subprocess.call("snp-sites -vpmc -o masked_core %s"%(masked_f), shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    #output,error = p.communicate() #Read data from stdout and stderr. Wait for process to terminate.
+    mcore_f = Path(idir+'masked_core.snp_sites.aln')
+    if not os.path.isfile(mcore_f):
+        print("Variant site alignment creation failed")
+        print(error)
+        sys.exit()
+    #Capturing version of snp-sites  
+    p = subprocess.call("snp-sites -V", shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    #output,error = p.communicate()
+
+    print("Variant site alignment creation successfull")
+    print()
+    print("masked_core.snp_sites.aln is your final core SNV aligment")
+
+if __name__ == '__main__':
+    main()
 
