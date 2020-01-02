@@ -1,5 +1,4 @@
-
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 #Created: 29.11.18 - Alexander Wailan
 
