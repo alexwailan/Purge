@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #Created: 29.11.18 - Alexander Wailan
 
@@ -136,8 +136,8 @@ def main():
     
     print()
     print("Get out your matches! Starting the PURGE!")
-    p = subprocess.call("remove_blocks_from_aln.py -a %s -t %s -o core_masked.aln "%(idir+afile,idir+mfile), shell=True,    stdout=subprocess.PIPE,stderr=subprocess.PIPE) 
-    #output,error = p.communicate() #Read data from stdout and stderr. Wait for process to terminate.
+    p = subprocess.call("remove_blocks_from_aln.py -a %s -t %s -o core_masked.aln "%(idir+afile,idir+mfile), shell=True) 
+     #output,error = p.communicate() #Read data from stdout and stderr. Wait for process to terminate.
     
     ##########################################
     # Check if masked aln file exists
